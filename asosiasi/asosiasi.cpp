@@ -1,14 +1,12 @@
 #include <iostream>
 #include <vector>
-#include <string>
 using namespace std;
 
-// Forward Declaration
-class dokter; // <--- OK, diperlukan karena pasien menggunakan dokter*
+class dokter;
 class pasien { // asosiasi
 public:
-    string nama; // <--- ERROR: 'string' not found jika <string> tidak di-include
-    vector<dokter*> daftar_dokter; // <--- ERROR: 'vector' not found jika <vector> tidak di-include, tapi ini sudah di-include
+    string nama;
+    vector<dokter*> daftar_dokter;
 
     pasien(string pNama) :nama(pNama) {
         cout << "Pasien \"" << nama << "\" ada\n";
@@ -23,8 +21,8 @@ public:
 
 class dokter {
 public:
-    string nama; // <--- ERROR: 'string' not found jika <string> tidak di-include
-    vector<pasien*> daftar_pasien; // <--- OK, pasien sudah didefinisikan di atas
+    string nama;
+    vector<pasien*> daftar_pasien;
 
     dokter(string pNama) :nama(pNama) {
         cout << "Dokter \"" << nama << "\" ada\n";
@@ -36,3 +34,51 @@ public:
     void tambahPasien(pasien*);
     void cetakPasien();
 };
+
+// Bagian 2: Implementasi Metode dan main() (Dari gambar terbaru Anda)
+void pasien::tambahDokter(dokter* pDokter) {
+    daftar_dokter.push_back(pDokter);
+}
+
+void pasien::cetakDokter() {
+    cout << "Daftar dokter yang menangani pasien \"" << this->nama << "\":\n";
+    for (auto &a : daftar_dokter) { // auto digunakan dalam perulangan for untuk secara otomatis menemukantipe data dari variabel yg diterima
+        cout << a->nama << "\n";
+    }
+    cout << endl;
+}
+
+void dokter::tambahPasien(pasien* pPasien) {
+    daftar_pasien.push_back(pPasien);
+}
+
+void dokter::cetakPasien() {
+    cout << "Daftar pasien dari dokter \"" << this->nama << "\":\n";
+    for (auto &a : daftar_pasien) {
+        cout << a->nama << "\n";
+    }
+    cout << endl;
+}
+
+int main() {
+    dokter* varDokter1 = new dokter("dr.Budi");
+    dokter* varDokter2 = new dokter("dr.Tono");
+    pasien* varPasien1 = new pasien("Andi");
+    pasien* varPasien2 = new pasien("Lia");
+
+    varDokter1->tambahPasien(varPasien1);
+    varDokter1->tambahPasien(varPasien2);
+    varDokter2->tambahPasien(varPasien1);
+
+    varDokter1->cetakPasien();
+    varDokter2->cetakPasien();
+    varPasien1->cetakDokter();
+    varPasien2->cetakDokter();
+
+    delete varPasien1;
+    delete varPasien2;
+    delete varDokter1;
+    delete varDokter2;
+
+    return 0;
+}
